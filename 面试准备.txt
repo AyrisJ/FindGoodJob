@@ -1,0 +1,48 @@
+# spring准备点
+## spring bean生命周期
++ 注解说明
+   @PostConstruct 初始化bean后调用
+   @PreDestroy 销毁bean前调用
+   @InitializingBean
+   @DisposableBean
+
++ BeanPostProcessor
+   实现此接口，所有的bean被创建后都会调用，可以选择需要的bean进行业务逻辑处理
+
+# Aop知识点
+## jdk动态代理
++ InvocationHandle的实现类---target被代理类对象---invoke方法实现业务逻辑
++ 生成代理类$Proxy
+  `
+  Proxy.newInstance(classloader,class.getInterfaces,invocationHandle)
+  `
++ 生成class字节码
+  ```
+  ProxyGenerator.generateProxyClass
+  ```
+
+
+## cglib代理
++ net.sf.cglib包
++ MethodInterceptor接口实现类，intercept方法完成业务逻辑的封装
++ Enhancer，setSuperclass设置被代理的类，setCallBack设置MethodInterceptor实现类
+
+# Collections总结
+**List,Set,Map**
+ArrayList,Vector,LinkedList,HashSet,TreeSet,HashMap,ConcurrentHashMap
+> [容器知识点](https://github.com/Snailclimb/JavaGuide#%E5%AE%B9%E5%99%A8)
+
+## ArrayList
++ 内部实现是Object[]数组，size表示集合当前的大小
++ 非线程安全，使用modCount表示集合修改的次数，在add,set,remove操作时，modCount数字加1
++ 初始大小10，每次扩容，变为原来的1.5倍
+***
+## Vector
++ 线程安全的，ArrayList的每个方法上加上synchronized同步关键字，性能不高
+
+## HashMap
+---
+1. 实现方式，数组+链表,数组的初始大小为16，每次扩容是原来的2倍，jdk1.8链表数据超过8转化为红黑树
+2. 获取数组下标的计算，正常是Hash码对数组长度n求余，为了能转换成位运算（n-1）& hash，位运算比较快，数组长度需要是2的指数幂
+3. 要点：hashCode的分布要尽可能的均匀，hash函数对高16位进行异或运算，如果自定义了对象的hashCode方法，要保证不能重复，
+     避免由于hash不均匀导致的存储到数组中的同一个位置，影响HashMap的性能
